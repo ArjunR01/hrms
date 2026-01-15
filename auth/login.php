@@ -1,39 +1,28 @@
 <?php
-// Check if already logged in - but no redirect loops
+session_start();
+require_once __DIR__ . '/../core/csrf.php';
+
+// Check if already logged in
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    // Let JavaScript handle the redirect
+    $role = $_SESSION['role'] ?? 'employee';
+    $dashboard_map = [
+        'super_admin' => '../dashboards/super_admin_dashboard.php',
+        'admin' => '../dashboards/admin_dashboard.php',
+        'hr' => '../dashboards/hr_dashboard.php',
+        'manager' => '../dashboards/manager_dashboard.php',
+        'employee' => '../dashboards/employee_dashboard.php'
+    ];
+    $redirect = $dashboard_map[strtolower(str_replace(' ', '_', $role))] ?? '../dashboards/employee_dashboard.php';
+    header("Location: $redirect");
     exit();
 }
 
-// Handle login form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    // Demo login credentials (no database needed initially)
-    $valid_credentials = [
-        'admin@ssspl.com' => ['password' => 'demo@123', 'role' => 'admin', 'name' => 'Admin User'],
-        'hr@ssspl.com' => ['password' => 'demo@123', 'role' => 'hr', 'name' => 'HR Manager'],
-        'manager@ssspl.com' => ['password' => 'demo@123', 'role' => 'manager', 'name' => 'Department Manager'],
-        'employee@ssspl.com' => ['password' => 'demo@123', 'role' => 'employee', 'name' => 'John Doe'],
-        'accounts@ssspl.com' => ['password' => 'demo@123', 'role' => 'accounts', 'name' => 'Accounts Officer']
-    ];
-    
-    if (isset($valid_credentials[$username]) && $valid_credentials[$username]['password'] === $password) {
-        // Set session
-        $_SESSION['logged_in'] = true;
-        $_SESSION['role'] = $valid_credentials[$username]['role'];
-        $_SESSION['username'] = $username;
-        $_SESSION['full_name'] = $valid_credentials[$username]['name'];
-        $_SESSION['user_id'] = 1;
-        
-        // Redirect using JavaScript to prevent loop
-        echo '<script>window.location.href = "dashboards/' . $valid_credentials[$username]['role'] . '_dashboard.php";</script>';
-        exit();
-    } else {
-        $error = "Invalid credentials. Use demo accounts.";
-    }
-}
+// Generate CSRF token
+$csrf_token = CSRF::generateToken();
+
+// Check for error messages
+$error = $_GET['error'] ?? '';
+$success = $_GET['success'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -540,7 +529,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <?php session_start(); ?>
     <div class="login-container">
         <!-- Left Panel: Branding & Info -->
         <div class="branding-panel">
@@ -580,20 +568,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php endif; ?>
                 
-                <form method="POST" action="">
+                <form method="POST" action="login_action.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                    
                     <div class="form-group">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">Email or Username</label>
                         <div class="input-wrapper">
                             <span class="input-icon">✉</span>
-                            <input type="email" name="username" class="input-field" 
-                                   placeholder="name@company.com" required autocomplete="username">
+                            <input type="text" name="username" class="input-field" 
+                                   placeholder="name@company.com or username" required autocomplete="username">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <div class="password-label-wrapper">
                             <label class="form-label">Password</label>
-                            <a href="#" class="forgot-password">Forgot password?</a>
+                            <a href="forgot_password.php" class="forgot-password">Forgot password?</a>
                         </div>
                         <div class="password-wrapper">
                             <div class="input-wrapper">

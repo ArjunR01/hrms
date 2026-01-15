@@ -33,18 +33,18 @@ $auth = new Auth();
 $result = $auth->login($username, $password);
 
 if($result['success']) {
-    $user_role = $result['user']['role_name'];
+    $user_role = $result['role'];
     
-    // Set redirect URL based on role
+    // Set redirect URL based on role - use correct path without 'auth/'
     $redirect_pages = [
-        'Super Admin' => '../dashboards/super_admin_dashboard.php',
-        'Admin' => '../dashboards/admin_dashboard.php',
-        'HR' => '../dashboards/hr_dashboard.php',
-        'Manager' => '../dashboards/manager_dashboard.php',
-        'Employee' => '../dashboards/employee_dashboard.php'
+        'Super Admin' => '/dashboards/super_admin_dashboard.php',
+        'Admin' => '/dashboards/admin_dashboard.php',
+        'HR' => '/dashboards/hr_dashboard.php',
+        'Manager' => '/dashboards/manager_dashboard.php',
+        'Employee' => '/dashboards/employee_dashboard.php'
     ];
     
-    $redirect_url = $redirect_pages[$user_role] ?? '../dashboards/employee_dashboard.php';
+    $redirect_url = $redirect_pages[$user_role] ?? '/dashboards/employee_dashboard.php';
     
     // Set remember me cookie if checked
     if(isset($_POST['remember']) && $_POST['remember'] == 'on') {

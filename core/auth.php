@@ -4,8 +4,14 @@ require_once __DIR__ . '/session.php';
 class Auth {
     private $db;
     
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($db = null) {
+        if ($db === null) {
+            require_once __DIR__ . '/../config/db.php';
+            $database = new Database();
+            $this->db = $database->getConnection();
+        } else {
+            $this->db = $db;
+        }
     }
     
     public function login($username, $password) {
