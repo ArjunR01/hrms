@@ -1,4 +1,101 @@
 /* Dashboard Styles */
+
+/* GLOBAL APP LAYOUT (fixes blank scroll area, alignment issues) */
+:root{
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+  --app-bg: #f8f9fc;
+  --card-radius: 16px;
+}
+
+html, body{
+  height: 100%;
+}
+
+body{
+  background: var(--app-bg);
+}
+
+.app-wrapper{
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Sidebar fixed layout */
+.sidebar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  z-index: 120;
+}
+
+.sidebar.collapsed{
+  width: var(--sidebar-collapsed-width);
+}
+
+/* Main content scrolls, sidebar stays fixed */
+.main-content{
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  width: calc(100% - var(--sidebar-width));
+  display: flex;
+  flex-direction: column;
+}
+
+.app-wrapper .sidebar.collapsed ~ .main-content{
+  margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* Top navbar sticky */
+.top-navbar{
+  position: sticky;
+  top: 0;
+  z-index: 110;
+}
+
+/* Page content takes full remaining height (prevents blank area) */
+.page-content,
+.content-wrapper{
+  flex: 1;
+  padding: 30px;
+}
+
+/* Footer sits at bottom of main-content */
+.page-footer{
+  background: #fff;
+  border-top: 1px solid var(--border-color);
+  padding: 18px 28px;
+}
+.footer-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.footer-content p{margin:0;color:var(--text-gray);font-size:13px;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{color:var(--text-gray);text-decoration:none;font-size:13px;}
+.footer-links a:hover{color:var(--primary-color);}
+
+@media (max-width: 768px){
+  .sidebar{
+    position: fixed;
+    left: -280px;
+  }
+  .sidebar.mobile-open{ left: 0; }
+  .main-content{
+    margin-left: 0;
+    width: 100%;
+  }
+  .page-footer{ margin-left: 0; }
+  .page-content{ padding: 18px; }
+}
+
 .dashboard-container {
     padding: 20px;
     min-height: 100vh;

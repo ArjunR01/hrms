@@ -1,6 +1,80 @@
 // Main Application JavaScript
 
+// Global Dashboard UI (dropdowns, sidebar toggle, mobile sidebar)
+function initDashboardUI() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    // Sidebar collapse/expand
+    if (sidebar && sidebarToggle) {
+        const savedState = localStorage.getItem('sidebarState');
+        if (savedState === 'collapsed') {
+            sidebar.classList.add('collapsed');
+        }
+
+        sidebarToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebarState', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+        });
+    }
+
+    // User dropdown
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (userProfileBtn && userDropdown) {
+        userProfileBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            if (notificationDropdown) notificationDropdown.classList.remove('active');
+        });
+    }
+
+    // Notification dropdown
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+
+    if (notificationBtn && notificationDropdown) {
+        notificationBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('active');
+            if (userDropdown) userDropdown.classList.remove('active');
+        });
+
+        document.querySelectorAll('.notification-item').forEach((item) => {
+            item.addEventListener('click', function () {
+                item.classList.remove('unread');
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                const badge = document.getElementById('notificationCount');
+                if (badge) {
+                    badge.textContent = unreadCount;
+                    if (unreadCount === 0) badge.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', function (e) {
+        if (userDropdown && userProfileBtn && !userProfileBtn.contains(e.target)) userDropdown.classList.remove('active');
+        if (notificationDropdown && notificationBtn && !notificationBtn.contains(e.target)) notificationDropdown.classList.remove('active');
+    });
+
+    // Close dropdowns on ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            if (userDropdown) userDropdown.classList.remove('active');
+            if (notificationDropdown) notificationDropdown.classList.remove('active');
+        }
+    });
+}
+
+
 $(document).ready(function() {
+    // Initialize dashboard UI
+    initDashboardUI();
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
     

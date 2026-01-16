@@ -7,7 +7,7 @@ Session::init();
 
 // Check if form is submitted via POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: login.php?error=Invalid request method');
+    header('Location: /auth/login.php?error=Invalid request method');
     exit();
 }
 
@@ -17,7 +17,7 @@ $password = $_POST['password'] ?? '';
 
 // Validate input
 if (empty($username) || empty($password)) {
-    header('Location: login.php?error=Please fill all fields');
+    header('Location: /auth/login.php?error=Please fill all fields');
     exit();
 }
 
@@ -30,7 +30,7 @@ try {
     $db = $database->getConnection();
     
     if (!$db) {
-        header('Location: login.php?error=Database connection failed');
+        header('Location: /auth/login.php?error=Database connection failed');
         exit();
     }
     
@@ -60,7 +60,7 @@ try {
     
     // Check if user exists
     if ($stmt->rowCount() == 0) {
-        header('Location: login.php?error=Invalid username or email&username=' . urlencode($username));
+        header('Location: /auth/login.php?error=Invalid username or email&username=' . urlencode($username));
         exit();
     }
     
@@ -68,13 +68,13 @@ try {
     
     // Check if account is active
     if ($user['status'] !== 'Active') {
-        header('Location: login.php?error=Your account is inactive. Please contact administrator&username=' . urlencode($username));
+        header('Location: /auth/login.php?error=Your account is inactive. Please contact administrator&username=' . urlencode($username));
         exit();
     }
     
     // Verify password
     if (!password_verify($password, $user['password_hash'])) {
-        header('Location: login.php?error=Invalid password&username=' . urlencode($username));
+        header('Location: /auth/login.php?error=Invalid password&username=' . urlencode($username));
         exit();
     }
     
@@ -123,7 +123,7 @@ try {
 } catch (PDOException $e) {
     // Log error (in production, log to file instead of displaying)
     error_log("Login error: " . $e->getMessage());
-    header('Location: login.php?error=An error occurred. Please try again later');
+    header('Location: /auth/login.php?error=An error occurred. Please try again later');
     exit();
 }
 ?>

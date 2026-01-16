@@ -28,7 +28,7 @@ $success = $_GET['success'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SSMS HRMS | Human Resource Management System</title>
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -716,7 +716,7 @@ $success = $_GET['success'] ?? '';
                     </div>
                 <?php endif; ?>
                 
-                <form method="POST" action="login_action.php" autocomplete="on">
+                <form method="POST" action="/auth/login_action.php" autocomplete="on">
                     <div class="form-group">
                         <label for="username" class="form-label">Email Address or Username</label>
                         <div class="input-wrapper">
@@ -737,7 +737,7 @@ $success = $_GET['success'] ?? '';
                     <div class="form-group">
                         <div class="password-label-row">
                             <label for="password" class="form-label">Password</label>
-                            <a href="forgot_password.php" class="forgot-link">Forgot password?</a>
+                            <a href="/auth/forgot_password.php" class="forgot-link">Forgot password?</a>
                         </div>
                         <div class="password-wrapper">
                             <div class="input-wrapper">
