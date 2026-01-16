@@ -29,7 +29,7 @@ if (!$employee) {
 }
 ?>
 
-<?php include '../../includes/sidebar.php'; ?>
+     <?php include '../../includes/sidebar_employee.php'; ?> 
 
 <div class="main-content">
     <?php include '../../includes/navbar.php'; ?>
